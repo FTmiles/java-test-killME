@@ -6,16 +6,13 @@ public class Main {
 
     static Scanner in = new Scanner(System.in);
 
-    static int n = 0;
-
     static Vartotojas[] vartotojai = new Vartotojas[MAX_PASKYRU];
 
     public static void main(String[] args) {
 
         // Test data
-        vartotojai[0] = new Vartotojas(1, "Jonas", "asd", "jonas@gmail.com", Lytis.VYRAS);
-        vartotojai[1] = new Vartotojas(2, "Ana", "qwe", "ana@gmail.com", Lytis.MOTERIS);
-        n = 2;
+        vartotojai[0] = new Vartotojas("Jonas", "asd", "jonas@gmail.com", Lytis.VYRAS);
+        vartotojai[1] = new Vartotojas("Ana", "qwe", "ana@gmail.com", Lytis.MOTERIS);
         // End of test data
 
         menu:
@@ -34,17 +31,16 @@ public class Main {
             System.out.println("└──────────────────────────┘");
             switch (pasirinkimas) {
                 case 1 -> {
-                    if (n >= MAX_PASKYRU) {
+                    if (Vartotojas.getVartototojuKiekis() >= MAX_PASKYRU) {
                         System.out.println("Daugiau paskyru sukurti nebegalima!");
                         break;
                     }
-                    vartotojoIvedimas(n);
-                    n++;
+                    vartotojoIvedimas(Vartotojas.getVartototojuKiekis());
                 }
                 case 2 -> {
                     System.out.print("Kuri vartotoja norite keisti: ");
                     int i = in.nextInt();
-                    if (i < 1 || i > n) {
+                    if (i < 1 || i > Vartotojas.getVartototojuKiekis()) {
                         System.out.println("Indeksas neteisingas!");
                         break;
                     }
@@ -59,12 +55,8 @@ public class Main {
                         // CIKLO VIDUS
                     }*/
 
-                    for (Vartotojas v : vartotojai) {
-                        if (v == null) break;
-                        //System.out.println("Id: " + v.getId() + " | Vardas: " + v.getVardas() + " | Slaptazodis: " + v.getSlaptazodis() + " | Email: " + v.getEmail() + " | Lytis: " + v.getLytis());
-                        System.out.printf("Id: %d | Vardas: %s | Slaptazodis: %s | Email: %s | Lytis: %s\n",
-                                v.getId(), v.getVardas(), v.getSlaptazodis(), v.getEmail(), v.getLytis());
-                    }
+                    for (int i = 0; i < Vartotojas.getVartototojuKiekis(); i++)
+                        System.out.println(vartotojai[i]);
                 }
 
                 case 4 -> {
@@ -80,13 +72,12 @@ public class Main {
     public static void vartotojoIvedimas(int i) {
         System.out.println("Iveskite " + (i + 1) + " vartotoja:");
 
-        int id = idIvestis();
         String vardas = vardoIvestis();
         String slaptazodis = slaptazodzioIvestis();
         String email = emailIvestis();
         Lytis lytis = lytiesIvestis();
 
-        vartotojai[i] = new Vartotojas(id, vardas, slaptazodis, email, lytis);
+        vartotojai[i] = new Vartotojas(vardas, slaptazodis, email, lytis);
     }
 
     @SuppressWarnings("unused")
