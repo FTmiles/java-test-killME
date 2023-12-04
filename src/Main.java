@@ -1,3 +1,7 @@
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main {
@@ -11,8 +15,8 @@ public class Main {
     public static void main(String[] args) {
 
         // Test data
-        vartotojai[0] = new Vartotojas("Jonas", "asd", "jonas@gmail.com", Lytis.VYRAS);
-        vartotojai[1] = new Vartotojas("Ana", "qwe", "ana@gmail.com", Lytis.MOTERIS);
+        vartotojai[0] = new Vartotojas("Jonas", "asd", "jonas@gmail.com", Lytis.VYRAS, LocalDate.now().minusYears(26));
+        vartotojai[1] = new Vartotojas("Ana", "qwe", "ana@gmail.com", Lytis.MOTERIS, LocalDate.now().minusDays(126).minusYears(56));
         // End of test data
 
         menu:
@@ -27,37 +31,19 @@ public class Main {
                     │ 3 - Spaudinti vartotojus │
                     │ 4 - Baigti programa      │
                     │ Ka norite daryti:\s""");
-            int pasirinkimas = in.nextInt();
+
+            int pasirinkimas = 0;
+            try {
+                pasirinkimas = in.nextInt();
+            } catch (InputMismatchException e) {
+                in.nextLine();//eat buffer
+
+            }
             System.out.println("└──────────────────────────┘");
             switch (pasirinkimas) {
-                case 1 -> {
-                    if (Vartotojas.getVartototojuKiekis() >= MAX_PASKYRU) {
-                        System.out.println("Daugiau paskyru sukurti nebegalima!");
-                        break;
-                    }
-                    vartotojoIvedimas(Vartotojas.getVartototojuKiekis());
-                }
-                case 2 -> {
-                    System.out.print("Kuri vartotoja norite keisti: ");
-                    int i = in.nextInt();
-                    if (i < 1 || i > Vartotojas.getVartototojuKiekis()) {
-                        System.out.println("Indeksas neteisingas!");
-                        break;
-                    }
-
-                    vartotojoKeitimasMeniu(i - 1);
-                }
-                case 3 -> {
-
-                    // Zemiau esantis enhanced for ciklas is esmes atstoja sitoki for cikla
-                    /*for (int i = 0; i < vartotojai.length; i++) {
-                        Vartotojas v = vartotojai[i];
-                        // CIKLO VIDUS
-                    }*/
-
-                    for (int i = 0; i < Vartotojas.getVartototojuKiekis(); i++)
-                        System.out.println(vartotojai[i]);
-                }
+                case 1 -> naujasVartotojas();
+                case 2 -> vartotojoKoregavimas();
+                case 3 -> vartotojuSpausdinimas();
 
                 case 4 -> {
                     System.out.println("Programa baigia darba");
@@ -69,6 +55,38 @@ public class Main {
         in.close();
     }
 
+    public static void naujasVartotojas() {
+        if (Vartotojas.getVartototojuKiekis() > MAX_PASKYRU) {
+            System.out.println("Daugiau paskyru sukurti nebegalima!");
+            return;
+        }
+        vartotojoIvedimas(Vartotojas.getVartototojuKiekis());
+    }
+
+    public static void vartotojoKoregavimas() {
+        System.out.print("Kuri vartotoja norite keisti: ");
+        int i = -1;
+        try {
+            i = in.nextInt();
+        } catch (InputMismatchException e) {
+            in.nextLine(); //eat buffer
+
+        }
+
+        if (i < 1 || i > Vartotojas.getVartototojuKiekis()) {
+            System.out.println("Indeksas neteisingas!");
+            return;
+        }
+
+        vartotojoKeitimasMeniu(i);
+    }
+
+    public static void vartotojuSpausdinimas() {
+        for (int i = 0; i < Vartotojas.getVartototojuKiekis(); i++)
+            System.out.println(vartotojai[i]);
+    }
+
+
     public static void vartotojoIvedimas(int i) {
         System.out.println("Iveskite " + (i + 1) + " vartotoja:");
 
@@ -76,8 +94,9 @@ public class Main {
         String slaptazodis = slaptazodzioIvestis();
         String email = emailIvestis();
         Lytis lytis = lytiesIvestis();
+        LocalDate gimimoData = gimimoDienosIvestis();
 
-        vartotojai[i] = new Vartotojas(vardas, slaptazodis, email, lytis);
+        vartotojai[i] = new Vartotojas(vardas, slaptazodis, email, lytis, gimimoData);
     }
 
     @SuppressWarnings("unused")
@@ -127,9 +146,18 @@ public class Main {
                     │ 3 - slaptazodi           │
                     │ 4 - emaila               │
                     │ 5 - lyti                 │
-                    │ 6 - gryzti i pradzia     │
+                    │ 6 - gimimo data          │
+                    │ 7 - gryzti i pradzia     │
                     │ Jusu pasirinkimas:\s""");
-            int laukas = in.nextInt();
+            int laukas;
+            try {
+                laukas = in.nextInt();
+            } catch (InputMismatchException e) {
+                in.nextLine();
+                System.out.println("Look what you've done!!! turejote ivesti skaiciu");
+                break;
+            }
+
             System.out.println("└──────────────────────────┘");
             switch (laukas) {
                 case 1 -> vart.setId(idIvestis());
@@ -137,7 +165,8 @@ public class Main {
                 case 3 -> vart.setSlaptazodis(slaptazodzioIvestis());
                 case 4 -> vart.setEmail(emailIvestis());
                 case 5 -> vart.setLytis(lytiesIvestis());
-                case 6 -> {
+                case 6 -> vart.setGimimoData(gimimoDienosIvestis());
+                case 7 -> {
                     break menu;
                 }
                 default -> System.out.println("Blogas pasirinkimas!");
@@ -147,8 +176,18 @@ public class Main {
 
     public static int idIvestis() {
         // TODO id validacija
-        System.out.print("\tIveskite id: ");
-        return in.nextInt();
+        int input;
+        while (true) {
+            System.out.print("\tIveskite id: ");
+            try {
+                input = in.nextInt();
+                return input;
+            } catch (InputMismatchException e) {
+                in.nextLine();
+                System.out.println("blogas id formatas, try again!");
+            }
+        }
+
     }
 
     public static String vardoIvestis() {
@@ -207,5 +246,26 @@ public class Main {
             System.out.println("\tNeteisinga lytis");
 
         return lytis;
+    }
+
+    public static LocalDate gimimoDienosIvestis() {
+        LocalDate DOB;
+        while (true) {
+            System.out.print("\tIveskite gimimo diena metai-men-diena: ");
+            String gimimoDataStr = in.next();
+            try {
+                DateTimeFormatter dtf = DateTimeFormatter.ISO_LOCAL_DATE;
+                DOB = LocalDate.parse(gimimoDataStr, dtf);
+                if (DOB.isAfter(LocalDate.now())) {
+                    System.out.println("\tGimimo data velesne nei siandiena!");
+                } else break;
+            } catch (DateTimeParseException e) {
+                System.out.println("Neteisingas datos formatas");
+            }
+
+        }
+
+
+        return DOB;
     }
 }

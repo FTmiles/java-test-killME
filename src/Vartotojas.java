@@ -1,23 +1,45 @@
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 public class Vartotojas {
+    public static final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private static int vartototojuKiekis = 0;
     private int id;
     private String vardas;
     private String slaptazodis;
     private String email;
     private Lytis lytis;
+    final private LocalDateTime regData;
+    private LocalDate gimimoData;
 
-    public Vartotojas() {
-        this.id = vartototojuKiekis;
-        vartototojuKiekis++;
-    }
-
-    public Vartotojas(String vardas, String slaptazodis, String email, Lytis lytis) {
-        this.id = vartototojuKiekis;
+    public Vartotojas(String vardas, String slaptazodis, String email, Lytis lytis, LocalDate gimimoData) {
+        this.id = vartototojuKiekis++;
         this.vardas = vardas;
         this.slaptazodis = slaptazodis;
         this.email = email;
         this.lytis = lytis;
+        this.gimimoData = gimimoData;
+        this.regData = LocalDateTime.now();
+    }
+
+    public LocalDateTime getRegData() {
+        return regData;
+    }
+
+
+    public LocalDate getGimimoData() {
+        return gimimoData;
+    }
+
+    public void setGimimoData(LocalDate gimimoData) {
+        this.gimimoData = gimimoData;
+    }
+
+    public Vartotojas() {
+        this.id = vartototojuKiekis;
         vartototojuKiekis++;
+        regData = LocalDateTime.now();
     }
 
     //<editor-fold desc="Setters/Getters/Etc">
@@ -72,8 +94,8 @@ public class Vartotojas {
 
     @Override
     public String toString() {
-        return String.format("Id: %d | Vardas: %s | Slaptazodis: %s | Email: %s | Lytis: %s",
-                id, vardas, slaptazodis, email, lytis);
+        return String.format("Id: %d | Vardas: %s | Slaptazodis: %s | Email: %s | Lytis: %s | Gimimo data: %s | Reg data: %s",
+                id, vardas, slaptazodis, email, lytis, gimimoData, regData.format(dtf));
     }
 
     //</editor-fold>
