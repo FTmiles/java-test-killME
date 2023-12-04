@@ -23,6 +23,24 @@ public class Vartotojas {
         this.regData = LocalDateTime.now();
     }
 
+//    public Vartotojas(int id) {
+//        this.id = id;
+//        this.regData = LocalDateTime.now();
+//    }
+
+//    @Override
+//    public boolean equals(Object o) {
+//        if (this == o) return true;
+//        if (o == null || getClass() != o.getClass()) return false;
+//        Vartotojas that = (Vartotojas) o;
+//        return id == that.id;
+//    }
+//
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(id);
+//    }
+
     public LocalDateTime getRegData() {
         return regData;
     }
