@@ -62,7 +62,14 @@ public class Main {
 
 
     public static void vartotojoKoregavimas() {
+        System.out.println("Aktyvus vartotojai");
         vartotojuSpausdinimas();
+
+        System.out.println("Neaktyvus vartotojai:");
+        vartotojaiLL.forEach(x -> {
+            if (!x.isActive()) System.out.println(x);
+        });
+
         System.out.print("Kuri vartotoja norite keisti? ID: ");
         int id = -1;
 
@@ -77,7 +84,11 @@ public class Main {
 
         for (Vartotojas v : vartotojaiLL) {
             if (id == v.getId()) {
-                vartotojoKeitimasMeniu(v);
+
+                if (v.isActive())
+                    vartotojoKeitimasMeniu(v);
+                else
+                    activateVartotojas(v);
                 return;
             }
         }
@@ -87,8 +98,37 @@ public class Main {
 
     }
 
+    public static void activateVartotojas(Vartotojas v) {
+
+        System.out.printf("""
+                Vartotojas id: %d yra neaktyvus. Todel negalima keisti jo info.
+                1. Aktyvuoti vartotoja
+                2. Grizti atgal
+                """, v.getId());
+        int pasirinkimas = 0;
+        try {
+            pasirinkimas = in.nextInt();
+        } catch (InputMismatchException e) {
+            in.nextLine();//eat the rich
+            System.out.println("bloga ivestis");
+        }
+
+        switch (pasirinkimas) {
+            case 1 -> v.setActive(true);
+            case 2 -> {
+                return;
+            }
+            default -> System.out.println("Blogas pasirinkimas, griztame i pradini menu");
+        }
+
+
+    }
+
+
     public static void vartotojuSpausdinimas() {
-        vartotojaiLL.forEach(System.out::println);
+        vartotojaiLL.forEach(x -> {
+            if (x.isActive()) System.out.println(x);
+        });
     }
 
 
@@ -145,16 +185,17 @@ public class Main {
         while (true) {
             System.out.print("""
                                         
-                    ┌──────────────────────────┐
-                    │           MENIU          │
-                    ├──────────────────────────┤
-                    │ Ka norite keisti?        │
-                    │ 1 - varda                │
-                    │ 2 - slaptazodi           │
-                    │ 3 - emaila               │
-                    │ 4 - lyti                 │
-                    │ 5 - gimimo data          │
-                    │ 6 - gryzti i pradzia     │
+                    ┌─────────────────────────────┐
+                    │           MENIU             │
+                    ├─────────────────────────────┤
+                    │ Ka norite keisti?           │
+                    │ 1 - varda                   │
+                    │ 2 - slaptazodi              │
+                    │ 3 - emaila                  │
+                    │ 4 - lyti                    │
+                    │ 5 - gimimo data             │
+                    │ 6 - gryzti i pradzia        │
+                    │ 10 - DEACTIVUOTI vertotoja  │
                     │ Jusu pasirinkimas:\s""");
             int laukas;
             try {
@@ -173,6 +214,7 @@ public class Main {
                 case 3 -> vart.setEmail(emailIvestis());
                 case 4 -> vart.setLytis(lytiesIvestis());
                 case 5 -> vart.setGimimoData(gimimoDienosIvestis());
+                case 10 -> vart.setActive(false);
                 case 6 -> {
                     break menu;
                 }

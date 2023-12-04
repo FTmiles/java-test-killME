@@ -12,6 +12,7 @@ public class Vartotojas {
     private Lytis lytis;
     final private LocalDateTime regData;
     private LocalDate gimimoData;
+    private boolean isActive = true;
 
     public Vartotojas(String vardas, String slaptazodis, String email, Lytis lytis, LocalDate gimimoData) {
         this.id = vartototojuKiekis++;
@@ -23,6 +24,13 @@ public class Vartotojas {
         this.regData = LocalDateTime.now();
     }
 
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
 //    public Vartotojas(int id) {
 //        this.id = id;
 //        this.regData = LocalDateTime.now();
