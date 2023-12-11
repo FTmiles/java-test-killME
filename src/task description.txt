@@ -1,0 +1,36 @@
+1. Apsirašyti vartotoją susikuriant laukus:
+vartotojo id, vartotojo vardas, slaptažodis, email adresas, vartotojo lytis.
+Laukus susikūrus išspausdinti naudojant visus laukus, pvz.: Id: 1 | Vardas: vardas | slaptažodis: slapta | ir t.t
+
+2. Naudojant Scanner padaryti, kad visus laukus galėtų įvesti ranka. Vartotojo lytį galima pakeisti iš String į Enum.
+
+3. Pridėti naują lauką kur pakartojamas slaptažodis. Naudojant if-else salygas tikrinti ar galima sukurti vartotoją su salygomis, pvz.:
+vartotojo vardas per trumpas(mažiau nei 3 simboliai), slaptažodžiai nesutampa, email laukas neturi @simbolio ir pan.
+
+4. Naudojant papildomą iš klaviatūros nuskaitomą vartotojo kiekio kintamąjį leisti įvesti keletą vartotojų ir juos išspausdinti.
+Čia reikės naudoti masyvus kiekvienam laukui ir for arbą while ciklą.
+
+5. Naudojant switch statement susikurti meniu ir padaryti, kad būtu vis klausiama vartotojo ką daryti: įvesti sekantį vartotoją, pakeisti jau įvestą vartotoją, atspausdinti įvestus vartotojus ar baigti programą.
+
+6. Ką nors iškelti į atskirą metodą, pvz.: vartotojo spausdinimas, laukų validavimas ar pan.
+
+7. Susikurti vartotojo klasę ir ten perkelti visus vartotojo laukus, ir jau kurti 1 masyvą kuris saugos Vartotojo objektus kuriuos įvesime.
+
+8. Susikurti statinį kintamąjį Vartotojo klasėje sekti paskutinio vartotojo Id ir padaryti, kad id būtu generuojamas vis didesnis už praeitą o nebe įvedamas ranka. Susikurti galima ir toString() metodą.
+
+9. Vartotojo klasėje pridėti naują lauką sauganti registracijos datą(ir laiką) ir dar vieną lauką kurį įves vartotojas sauganti gimimo datą.
+
+10. Vartotojų masyvą pakeisti į vieną iš Java Collections API kolekcijų saugoti vartotojus, tad nebereikės klausti kiek vartotojų kurti pradžioje. Taip pat galima jau padaryti, naują pasirinkimą trinti vartotoją.
+
+10a. Galima paekspermentuoti su skirtingomis kolekcijomis, pvz naudoti ArrayList ir pakeisti i HashMap/TreeMap
+
+11. Prideti nauja meniu pasirinkima koreguoti pasirinkto vartotojo lauku reiksmes, pvz.: username, password, etc.
+
+12. Panaudojant try/catch apsaugoti programa nuo uzluzimo del netinkamai ivedamu duomenu typu. Panaudoti savo susikurta Exception/RuntimeException klase.
+
+13. Naudojant failu rasymo klases ivestus vartotojus leisti isspausdinti i teksto faila pridentant
+nauja meniu pasirinkima arba pridedant papildoma klausima ar isvesti duomenis i faila kai pasirenkame
+spausdinti vartotojus i ekrana.
+
+14. Naudojant failu skaitymo klases leisti programai pasileidus(arba kaip meniu punkta vartotojui
+paprasius) uzkrauti vartotojus is teksto failo.

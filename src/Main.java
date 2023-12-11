@@ -1,26 +1,102 @@
+import java.io.*;
+import java.nio.file.Files;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.InputMismatchException;
-import java.util.LinkedList;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
-
+    static final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyy_MM_dd-HH_mm_ss");
     static Scanner in = new Scanner(System.in);
 
     static LinkedList<Vartotojas> vartotojaiLL = new LinkedList<>();
 
+    public record Busena(LinkedList<Vartotojas> vartotojai,
+                         int sekantisId) implements Serializable {
+
+    }
+
     public static void main(String[] args) {
 
-        // Test data
-        vartotojaiLL.add(
-                new Vartotojas("Jonas", "asd", "jonas@gmail.com", Lytis.VYRAS, LocalDate.now().minusYears(26))
-        );
-        vartotojaiLL.add(
-                new Vartotojas("Ana", "qwe", "ana@gmail.com", Lytis.MOTERIS, LocalDate.now().minusDays(126).minusYears(56))
-        );
-        // End of test data
+        //load database
+/*        try {
+            FileReader fr = new FileReader("userDB.csv");
+            BufferedReader br = new BufferedReader(fr);
+
+
+            String line;
+            while ((line = br.readLine()) != null) {
+                System.out.println(line);
+
+                String[] arr = line.split(",");
+
+                int id = Integer.parseInt(arr[0]);
+                String vardas = arr[1];
+                String slaptazodis = arr[2];
+                String email = arr[3];
+                Lytis lytis = arr[4].equals("VYRAS") ? Lytis.VYRAS : Lytis.MOTERIS;
+                LocalDateTime regData = LocalDateTime.parse(arr[5]);
+                LocalDate gimimoData = LocalDate.parse(arr[6]);
+                boolean isActive = Boolean.parseBoolean(arr[7]);
+
+                int vartototojuKiekis = Integer.parseInt(arr[8]);
+                vartotojaiLL.add(
+                        new Vartotojas(id, vardas, slaptazodis, email, lytis, regData, gimimoData, isActive, vartototojuKiekis)
+                );
+            }
+
+
+        } catch (FileNotFoundException e) {
+            System.out.println("Klaida loadinant data");
+        } catch (IOException e) {
+        }*/
+
+        //////////////OBJECT LOADING///////////
+
+/*
+
+        try {
+            FileInputStream fis = new FileInputStream("busena.dat");
+            ObjectInputStream ois = new ObjectInputStream(fis);
+//cia lauryno records
+            Busena busena = (Busena) ois.readObject();
+
+
+            vartotojaiLL = busena.vartotojai();
+
+            Vartotojas.setVartototojuKiekis(busena.sekantisId());
+            System.out.println("HIT ME?");
+//            Object busena = ois.readObject();
+
+//            vartotojaiLL = (LinkedList<Vartotojas>) ois.readObject();
+
+
+            ois.close();
+
+            System.out.println("Success loading state");
+
+        } catch (FileNotFoundException e) {
+            System.out.println("file not found");
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            System.out.println("ioexception");
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            System.out.println("classnotfound");
+            throw new RuntimeException(e);
+        }
+*/
+
+
+//        // Test data
+//        vartotojaiLL.add(
+//                new Vartotojas("Jonas", "asd", "jonas@gmail.com", Lytis.VYRAS, LocalDate.now().minusYears(26))
+//        );
+//        vartotojaiLL.add(
+//                new Vartotojas("Ana", "qwe", "ana@gmail.com", Lytis.MOTERIS, LocalDate.now().minusDays(126).minusYears(56))
+//        );
+//        // End of test data
 
         menu:
         while (true) {
@@ -33,7 +109,9 @@ public class Main {
                     │ 2 - Pakeisti esama       │
                     │ 3 - Spaudinti vartotojus │
                     │ 4 - Trinti vartotoja     │
-                    │ 5 - Baigti programa      │
+                    │ 5 - Save to database     │
+                    │ 6 - save state           │
+                    │ 7 - Baigti programa      │
                     │ Ka norite daryti:\s""");
 
             int pasirinkimas = 0;
@@ -47,10 +125,12 @@ public class Main {
             switch (pasirinkimas) {
                 case 1 -> vartotojoIvedimas();
                 case 2 -> vartotojoKoregavimas();
-                case 3 -> vartotojuSpausdinimas();
+                case 3 -> spausdintiPasirinkimas();
                 case 4 -> trintiVartotoja();
+                case 5 -> toFile(true, "userDB.csv");
+                case 6 -> busenosIrasimas();
 
-                case 5 -> {
+                case 7 -> {
                     System.out.println("Programa baigia darba");
                     break menu;
                 }
@@ -60,6 +140,146 @@ public class Main {
         in.close();
     }
 
+
+    public static void spausdintiPasirinkimas() {
+        System.out.println("1. Spausdinti i ekrana");
+        System.out.println("2. Spausdinti i file");
+
+        int pasirinkimas = 0;
+        try {
+            pasirinkimas = in.nextInt();
+        } catch (InputMismatchException e) {
+            System.out.println("blogas pasirinkimas");
+        }
+
+        switch (pasirinkimas) {
+            case 1 -> vartotojuSpausdinimas();
+            case 2 -> toFile(false, "printedUsers.txt");
+        }
+
+    }
+
+
+    //Lauryno load from csv busenos uzkrovimastxt
+    private static void busenosUzkrovimasText() {
+        //1. nuskaityti visus files, readAllBites, ir padaryti stringa
+        try {
+            FileInputStream fis = new FileInputStream("busena.ssaav");
+            String content = new String(fis.readAllBytes());
+
+            String[] vartotojaiStr = content.split("\n");
+
+            for (String vartStr : vartotojaiStr) {
+                Vartotojas vart = Vartotojas.fromCSV(vartStr);
+                vartotojaiLL.add(vart);
+            }
+
+
+            fis.close();
+            System.out.println("loaded OK success");
+        } catch (Exception e) {
+            System.out.println("Klaida");
+        }
+
+    }
+
+
+    //Lauryno save to CSV
+    public static void busenosIrasimasText() {
+
+        try {
+
+            ArrayList<String> xlines = new ArrayList<>();
+            for (Vartotojas v : vartotojaiLL) {
+                xlines.add(v.toCSVline());
+            }
+            Files.write(null, xlines);
+
+            ////////////////////////////
+            StringBuilder sb = new StringBuilder();
+            for (Vartotojas x : vartotojaiLL) {
+                sb.append(x.toCSVline()).append('\n');
+            }
+////////////////////////////////////////////////////
+
+            List<String> lines = vartotojaiLL.stream().map(Vartotojas::toCSVline).toList();
+//            Files.write(null, lines);
+            Files.write(new File("busena.ssaav").toPath(), lines);
+
+            //////////////////////////////////
+            BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream("busena.sav"));
+            for (Vartotojas vartotojas : vartotojaiLL) {
+                bos.write(vartotojas.toCSVline().getBytes());
+                bos.write('\n');
+            }
+            System.out.println("Busena irasyta i faila.");
+            bos.flush();
+            bos.close();
+        } catch (IOException e) {
+            System.out.println("Nepavyko issaugoti busenos!");
+        }
+
+    }
+
+    //Lauryno implementation
+    public static void vartotojuSpausdinimasIFaila() {
+        try {
+            String fileName = String.format("vartotojai-%s.log", LocalDateTime.now().format(dtf));
+            BufferedOutputStream bs = new BufferedOutputStream(new FileOutputStream(fileName));
+
+            for (int i = 0; i < vartotojaiLL.size(); i++) {
+                Vartotojas vart = vartotojaiLL.get(i);
+                String line = i + " | " + vart + "\n";
+                bs.write(line.getBytes());
+            }
+
+            bs.close(); //check documentation it closes
+        } catch (IOException e) {
+            System.out.println("nepavyko irasyti i file");
+        }
+    }
+
+
+    public static void busenosIrasimas() {
+        try {
+            FileOutputStream fs = new FileOutputStream("busena.dat");
+            ObjectOutputStream os = new ObjectOutputStream(fs);
+            //cia jau record uzkomentuotas
+            Busena busena = new Busena(vartotojaiLL, Vartotojas.getVartototojuKiekis());
+
+            os.writeObject(busena);
+            System.out.println("saved state");
+
+            os.close();
+            fs.flush();
+            fs.close(); //Nezinom tikrai ar wrapper .close() uzdaro fs, ir flushina?
+        } catch (IOException e) {
+            System.out.println("failed to save state");
+        }
+
+    }
+
+
+    public static void toFile(boolean onlyCSV, String fileName) {
+        try {
+            FileWriter fw = new FileWriter(fileName);
+
+            for (Vartotojas vartotojas : vartotojaiLL) {
+                if (onlyCSV)
+                    fw.write(vartotojas.toCSVline());
+                else
+                    fw.write(vartotojas.toString());
+
+                fw.write('\n');
+            }
+            fw.flush();
+            fw.close();
+
+            System.out.println("I'm done my chores!!");
+        } catch (IOException e) {
+            System.out.println("ivyko IOException, fun fun fun! \n" + e.toString());
+        }
+    }
 
     public static void vartotojoKoregavimas() {
         System.out.println("Aktyvus vartotojai");
@@ -139,20 +359,35 @@ public class Main {
         try {
             id = in.nextInt();
         } catch (InputMismatchException e) {
-            in.nextLine(); //eat buffer
-            System.out.println("Blogas formatas, iveskite skaiciu!");
-            return;
+            in.next();
         }
-
-
-        for (Vartotojas v : vartotojaiLL) {
-            if (v.getId() == id)
-                vartotojaiLL.remove(v);
-            System.out.printf("Vartotojas su ID %d sekmingai istrintas\n", id);
-            return;
+        for (Vartotojas vartotojas : vartotojaiLL) {
+            if (vartotojas.getId() == id) {
+                System.out.print("""
+                        1 - Trinti
+                        2 - Deaktivuoti
+                        3 - Atsaukti
+                        Jusu pasirinkimas:\s""");
+                int pasirinkimas = 3;
+                try {
+                    pasirinkimas = in.nextInt();
+                } catch (InputMismatchException e) {
+                    in.next();
+                    System.out.println("Ivestas ne skaicius!");
+                }
+                switch (pasirinkimas) {
+                    case 1 -> {
+                        vartotojaiLL.remove(vartotojas);
+                        System.out.println("\tVartotojas istrintas!");
+                    }
+                    case 2 -> {
+                        vartotojas.setActive(false);
+                        System.out.println("\tVartotojas deaktivuotas!");
+                    }
+                }
+                break;
+            }
         }
-
-        System.out.printf("Toks id, %d, nerastas, ir niekas nebuvo istrinta", id);
 //
 //        Vartotojas delThis = new Vartotojas(id);
 //
