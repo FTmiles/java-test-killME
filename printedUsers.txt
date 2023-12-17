@@ -5,8 +5,4 @@
 [🟢] Id: 4 | Vardas: Judy | Slaptazodis: secret456 | Email: Judykillya@gmail.com | Lytis: MOTERIS | Gimimo data: 1996-12-30 | Reg data: 2023-12-07 15:56:56
 [🟢] Id: 5 | Vardas: Hans | Slaptazodis: pen234 | Email: hansJansen@outlook.com | Lytis: VYRAS | Gimimo data: 1935-03-28 | Reg data: 2023-12-07 15:59:01
 
-<<<<<<< HEAD
-//selling wine in offline stores samfunei la
-=======
-I'm just using alibaba.com platforms, and QQ and wecaht
->>>>>>> cbb13602b88e85a29c17b93ea19dbb8bb252b6be
+think im gonna srunn a tiktook shop and redirect traffic to shoppify
